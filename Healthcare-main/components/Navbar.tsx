@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useSession, signOut, signIn } from "next-auth/react";
 import {
   Menu, X, User, LogOut, Shield, Building2,
-  ChevronDown, Bell, Calendar, Phone, Stethoscope,
+  ChevronDown, Bell, Calendar, Phone, Stethoscope, MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProtectedLink from "./ProtectedLink";
@@ -76,6 +76,14 @@ export const Navbar = () => {
               {l.label}
             </Link>
           ))}
+
+          <Link
+            href="/hospitals-near-me"
+            className="px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition-all flex items-center gap-1.5"
+          >
+            <MapPin className="h-4 w-4 text-emerald-600" />
+            Hospitals Near Me
+          </Link>
 
           <ProtectedLink
             href="/appointments/hospitals"
@@ -249,6 +257,14 @@ export const Navbar = () => {
                   {l.label}
                 </Link>
               ))}
+              <Link
+                href="/hospitals-near-me"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                <MapPin className="h-4 w-4" /> Hospitals Near Me
+              </Link>
+
               <ProtectedLink
                 href="/appointments/hospitals"
                 requiredRoles={["PATIENT", "DOCTOR", "HOSPITAL_STAFF", "HOSPITAL_ADMIN", "SUPER_ADMIN"]}

@@ -6,6 +6,10 @@ const hospitalsData = [
     "name": "Doon Medical College & Hospital",
     "district": "Dehradun",
     "subdistrict": "Dehradun",
+    "latitude": 30.3244,
+    "longitude": 78.0416,
+    "phone": "0135-2726020",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "General Medicine",
@@ -43,6 +47,10 @@ const hospitalsData = [
     "name": "District Hospital Haridwar",
     "district": "Haridwar",
     "subdistrict": "Haridwar",
+    "latitude": 29.9457,
+    "longitude": 78.1642,
+    "phone": "01334-226222",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "General Medicine",
@@ -68,6 +76,10 @@ const hospitalsData = [
     "name": "Civil Hospital Roorkee",
     "district": "Haridwar",
     "subdistrict": "Roorkee",
+    "latitude": 29.8660,
+    "longitude": 77.8920,
+    "phone": "01332-265111",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "Orthopedics",
@@ -84,6 +96,10 @@ const hospitalsData = [
     "name": "Base Hospital Haldwani",
     "district": "Nainital",
     "subdistrict": "Haldwani",
+    "latitude": 29.2183,
+    "longitude": 79.5130,
+    "phone": "05946-234415",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "Cardiology",
@@ -109,6 +125,10 @@ const hospitalsData = [
     "name": "Sushila Tiwari Government Hospital",
     "district": "Nainital",
     "subdistrict": "Haldwani",
+    "latitude": 29.2155,
+    "longitude": 79.5085,
+    "phone": "05946-282828",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "General Medicine",
@@ -134,6 +154,10 @@ const hospitalsData = [
     "name": "JLN District Hospital Rudrapur",
     "district": "Udham Singh Nagar",
     "subdistrict": "Rudrapur",
+    "latitude": 28.9800,
+    "longitude": 79.4000,
+    "phone": "05944-242333",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "Pediatrics",
@@ -150,6 +174,10 @@ const hospitalsData = [
     "name": "Base Hospital Srinagar",
     "district": "Pauri Garhwal",
     "subdistrict": "Srinagar",
+    "latitude": 30.2227,
+    "longitude": 78.7844,
+    "phone": "01346-252111",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "Gynecology",
@@ -166,6 +194,10 @@ const hospitalsData = [
     "name": "District Hospital Almora",
     "district": "Almora",
     "subdistrict": "Almora",
+    "latitude": 29.6050,
+    "longitude": 79.6600,
+    "phone": "05962-230111",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "General Medicine",
@@ -182,6 +214,10 @@ const hospitalsData = [
     "name": "District Hospital Pithoragarh",
     "district": "Pithoragarh",
     "subdistrict": "Pithoragarh",
+    "latitude": 29.5828,
+    "longitude": 80.2182,
+    "phone": "05964-225222",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "Orthopedics",
@@ -198,6 +234,10 @@ const hospitalsData = [
     "name": "District Hospital Champawat",
     "district": "Champawat",
     "subdistrict": "Champawat",
+    "latitude": 29.3364,
+    "longitude": 80.0911,
+    "phone": "05967-222333",
+    "emergencyServices": true,
     "departments": [
       {
         "name": "Gynecology",
@@ -206,6 +246,125 @@ const hospitalsData = [
         ],
         "services": [
           { "name": "Women's Health OPD", "charge": 30 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "CHC / PHC Dwarahat",
+    "district": "Almora",
+    "subdistrict": "Dwarahat",
+    "latitude": 29.7820,
+    "longitude": 79.4310,
+    "phone": "05966-244222",
+    "emergencyServices": true,
+    "departments": [
+      {
+        "name": "General Medicine",
+        "doctors": [
+          { "name": "Dr. Ramesh Chandra", "experience": 7, "qualification": "MBBS, Medical Officer" },
+          { "name": "Dr. Preeti Bisht", "experience": 5, "qualification": "MBBS, Medical Officer" }
+        ],
+        "services": [
+          { "name": "OPD Consultation & First Aid", "charge": 10 },
+          { "name": "General Health Checkup", "charge": 10 }
+        ]
+      },
+      {
+        "name": "Pediatrics",
+        "doctors": [
+          { "name": "Dr. Harish Pandey", "experience": 6, "qualification": "MBBS, DCH" }
+        ],
+        "services": [
+          { "name": "Immunization & Child OPD", "charge": 10 }
+        ]
+      },
+      {
+        "name": "Gynecology",
+        "doctors": [
+          { "name": "Dr. Manisha Negi", "experience": 8, "qualification": "MBBS, DGO" }
+        ],
+        "services": [
+          { "name": "Maternal & Antenatal Care (ANC)", "charge": 10 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "CHC Chaukhutiya",
+    "district": "Almora",
+    "subdistrict": "Chaukhutiya",
+    "latitude": 29.8700,
+    "longitude": 79.3500,
+    "phone": "05966-248108",
+    "emergencyServices": true,
+    "departments": [
+      {
+        "name": "General Medicine",
+        "doctors": [
+          { "name": "Dr. Virendra Rawat", "experience": 9, "qualification": "MBBS, MD Medicine" }
+        ],
+        "services": [
+          { "name": "OPD Consultation", "charge": 10 },
+          { "name": "Emergency & Trauma Care", "charge": 0 }
+        ]
+      },
+      {
+        "name": "Gynecology",
+        "doctors": [
+          { "name": "Dr. Anjali Bhatt", "experience": 6, "qualification": "MS Gynecology" }
+        ],
+        "services": [
+          { "name": "Delivery & Maternal Care", "charge": 10 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "PHC Someshwar",
+    "district": "Almora",
+    "subdistrict": "Someshwar",
+    "latitude": 29.7780,
+    "longitude": 79.6000,
+    "phone": "05962-243100",
+    "emergencyServices": false,
+    "departments": [
+      {
+        "name": "General Medicine",
+        "doctors": [
+          { "name": "Dr. Kamal Arya", "experience": 5, "qualification": "MBBS, Medical Officer" }
+        ],
+        "services": [
+          { "name": "Primary OPD & Immunization", "charge": 10 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Govind Singh Mahara CHC Ranikhet",
+    "district": "Almora",
+    "subdistrict": "Ranikhet",
+    "latitude": 29.6430,
+    "longitude": 79.4320,
+    "phone": "05966-220555",
+    "emergencyServices": true,
+    "departments": [
+      {
+        "name": "General Medicine",
+        "doctors": [
+          { "name": "Dr. Narendra Mehra", "experience": 11, "qualification": "MD Medicine" }
+        ],
+        "services": [
+          { "name": "OPD Consultation", "charge": 20 }
+        ]
+      },
+      {
+        "name": "Orthopedics",
+        "doctors": [
+          { "name": "Dr. Bhupendra Singh", "experience": 8, "qualification": "MS Ortho" }
+        ],
+        "services": [
+          { "name": "Bone & Joint Care", "charge": 30 }
         ]
       }
     ]
@@ -238,6 +397,11 @@ async function main() {
         name: hData.name,
         address: hData.subdistrict,
         city: hData.district,
+        latitude: hData.latitude,
+        longitude: hData.longitude,
+        phone: hData.phone,
+        emergencyServices: hData.emergencyServices,
+        isGovernment: true,
         status: "APPROVED",
       }
     });

@@ -25,7 +25,10 @@ import {
   CheckCircle2,
   Filter,
   X,
+  LayoutGrid,
+  Map,
 } from "lucide-react";
+import HospitalMapWrapper from "@/components/map/HospitalMapWrapper";
 
 interface Hospital {
   id: string;
@@ -33,6 +36,9 @@ interface Hospital {
   address: string;
   city: string;
   specialties: string[];
+  latitude?: number | null;
+  longitude?: number | null;
+  distance?: number | null;
 }
 
 // Map specialty names to icons and colors
@@ -80,13 +86,62 @@ export default function HospitalsPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("All");
+  const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [selectedHospitalId, setSelectedHospitalId] = useState<string | null>(null);
+
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+  // Helper Haversine formula
+  const getDistanceKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c * 10) / 10;
+  };
 
   useEffect(() => {
     fetch("/api/hospitals")
       .then((res) => res.json())
-      .then((data) => {
-        setHospitals(data);
-        setLoading(false);
+      .then((data: Hospital[]) => {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const uLat = pos.coords.latitude;
+              const uLng = pos.coords.longitude;
+              setUserLocation({ lat: uLat, lng: uLng });
+              const withDistance = data.map((h) => ({
+                ...h,
+                distance:
+                  h.latitude && h.longitude
+                    ? getDistanceKm(uLat, uLng, h.latitude, h.longitude)
+                    : null,
+              }));
+              // Sort nearest first
+              withDistance.sort((a, b) => {
+                if (a.distance === null) return 1;
+                if (b.distance === null) return -1;
+                return a.distance - b.distance;
+              });
+              setHospitals(withDistance);
+              setLoading(false);
+            },
+            () => {
+              setHospitals(data);
+              setLoading(false);
+            },
+            { timeout: 5000 }
+          );
+        } else {
+          setHospitals(data);
+          setLoading(false);
+        }
       })
       .catch(() => setLoading(false));
   }, []);
@@ -204,20 +259,103 @@ export default function HospitalsPage() {
       {/* ── Main Content ── */}
       <div className="container mx-auto px-4 py-10 max-w-7xl">
 
-        {/* Results count */}
+        {/* Results count & View Mode Switcher */}
         {!loading && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-slate-500 font-medium mb-6"
-          >
-            Showing <span className="text-emerald-600 font-bold">{filteredHospitals.length}</span> hospital{filteredHospitals.length !== 1 ? "s" : ""}
-            {selectedDistrict !== "All" && <> in <span className="text-emerald-600 font-bold">{selectedDistrict}</span></>}
-          </motion.p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-slate-500 font-medium"
+            >
+              Showing <span className="text-emerald-600 font-bold">{filteredHospitals.length}</span> hospital{filteredHospitals.length !== 1 ? "s" : ""}
+              {selectedDistrict !== "All" && <> in <span className="text-emerald-600 font-bold">{selectedDistrict}</span></>}
+            </motion.p>
+
+            {/* List View / Map View Toggle Buttons */}
+            <div className="inline-flex items-center p-1 bg-white border border-slate-200/90 rounded-2xl shadow-sm">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  viewMode === "list"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <LayoutGrid className="h-4 w-4" />
+                List View
+              </button>
+              <button
+                onClick={() => setViewMode("map")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  viewMode === "map"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <Map className="h-4 w-4" />
+                Map View
+              </button>
+            </div>
+          </div>
         )}
 
-        {/* Cards Grid */}
-        <AnimatePresence mode="wait">
+        {/* ── Conditional View: Map View vs List View ── */}
+        {viewMode === "map" ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[600px]">
+            {/* Left side hospital cards in Map view */}
+            <div className="lg:col-span-5 flex flex-col gap-3 order-2 lg:order-1 max-h-[620px] overflow-y-auto pr-1">
+              {filteredHospitals.map((hospital) => {
+                const isSelected = hospital.id === selectedHospitalId;
+                return (
+                  <div
+                    key={hospital.id}
+                    onClick={() => setSelectedHospitalId(hospital.id)}
+                    className={`cursor-pointer rounded-2xl p-4 border transition-all bg-white hover:shadow-md ${
+                      isSelected
+                        ? "border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
+                        : "border-slate-200 hover:border-emerald-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="text-xs font-bold text-slate-800">{hospital.name}</span>
+                      {hospital.distance !== null && hospital.distance !== undefined && (
+                        <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                          {hospital.distance} km
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-500 flex items-center gap-1 mb-2">
+                      <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                      {hospital.address}, {hospital.city}
+                    </p>
+                    <Link
+                      href={`/appointments/hospitals/${hospital.id}/departments`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button
+                        size="sm"
+                        className="w-full h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold"
+                      >
+                        Book Appointment
+                      </Button>
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Right side interactive map */}
+            <div className="lg:col-span-7 order-1 lg:order-2 h-[500px] lg:h-[620px]">
+              <HospitalMapWrapper
+                userLocation={userLocation}
+                hospitals={filteredHospitals as any}
+                selectedHospitalId={selectedHospitalId}
+                onSelectHospital={(h) => setSelectedHospitalId(h.id)}
+              />
+            </div>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait">
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -264,10 +402,17 @@ export default function HospitalsPage() {
                         </div>
                       </div>
 
-                      {/* Location */}
-                      <div className="flex items-center gap-1.5 text-white/90 text-sm font-medium">
-                        <MapPin className="h-4 w-4 text-white/70 shrink-0" />
-                        <span>{hospital.address}, {hospital.city}</span>
+                      {/* Location & Distance */}
+                      <div className="flex items-center justify-between text-white/90 text-sm font-medium">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-4 w-4 text-white/70 shrink-0" />
+                          <span>{hospital.address}, {hospital.city}</span>
+                        </div>
+                        {hospital.distance !== null && hospital.distance !== undefined && (
+                          <span className="bg-white/25 backdrop-blur-md px-2 py-0.5 rounded-full text-xs font-bold text-white shadow-sm">
+                            {hospital.distance} km
+                          </span>
+                        )}
                       </div>
 
                       {/* Decorative circle */}
@@ -359,6 +504,7 @@ export default function HospitalsPage() {
             </motion.div>
           )}
         </AnimatePresence>
+        )}
 
         {/* Bottom note */}
         {!loading && filteredHospitals.length > 0 && (

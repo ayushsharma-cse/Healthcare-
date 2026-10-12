@@ -11,6 +11,11 @@ export async function GET() {
         name: true,
         address: true,
         city: true,
+        latitude: true,
+        longitude: true,
+        phone: true,
+        emergencyServices: true,
+        isGovernment: true,
         services: {
           select: {
             name: true
